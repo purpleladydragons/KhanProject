@@ -1,7 +1,4 @@
 # TODO overall
-# get email back about limted
-# think about how we want to do limited
-# make sure we understand limited
 # make sure their install goes smoothly
 # random graphs
 # handcrafted graphs that we know the answer to for testing
@@ -10,6 +7,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import argparse
 import random
+import time
 
 class User:
     def __init__(self, id):
@@ -28,12 +26,22 @@ class User:
         return str(self.id)
 
 def create_random_graph():
-    num_users = random.randint(0, 1000)
+    """Create a random graph"""
+    num_users = random.randint(1, 1000)
     users = [User(x) for x in xrange(num_users)]
 
-    # how to create coaches and students in our representation?
+    coached = set()
+    for user in users:
+        # probabalistically assign students
+        while random.random() > .5:
+            # pick a random student that isn't already being coached
+            if len( set(users) - ({user}.union(coached)) ) > 0:
+                student = random.sample(set(users) - ({user}.union(coached)), 1)[0]
+                user.students.append(student)
+                student.coaches.append(user)
+                coached.add(student)
 
-# TODO create several simple graphs with hand calculated expected results
+    return users
 
 def create_simple_graph():
     """Create a simple repeatable graph with two islands 
@@ -125,35 +133,122 @@ def total_infection(start, users, visualize=False):
     # let the finished infection display for a second
     if visualize:
         plt.pause(1)
-                
-# TODO
-def limited_infection(start, users, number, visualize=False):
+
+def limited_infection(users, number, visualize=False):
     """Infect a limited number of users related to the given user
 
-    :param start: the User that the infection will begin from
     :param users: a list of Users that represents the graph
     :param number: the desired number of total infections
     """
 
-    # DFS with visited list to find all connected nodes
+    components = get_components(users)
+    infected = 0
+
+    if visualize:
+        G, graph_color_values, disp = load_graph(users)
+
+    for component in components:
+        if len(component) + infected < number:
+            # the whole component is connected so no need to dfs it
+            for user in component:
+                # update the original data
+                users[user.id].version = 1
+                if visualize:
+                    graph_color_values[user.id] = 1
+                    redraw_graph(G, graph_color_values, disp)
+            infected += len(component)
+
+        # bring in the big guns 
+        else:
+            to_infect= bfs_infect(component, number-infected)
+            for user in to_infect:
+                # update the original data
+                users[user.id].version = 1
+                if visualize:
+                    graph_color_values[user.id] = 1
+                    redraw_graph(G, graph_color_values, disp)
+            infected += len(to_infect)
+            break
+
+    if visualize:
+        plt.pause(1)
+        
+def bfs_infect(graph, number):
+    """Partition the graph into two subsets so that we isolate classrooms as much as possible
+
+    :param graph: an adjacency list of Users
+    :param number: max size of set A
+    """
+    
+    to_infect = set()
+
+    # do a sort of bfs starting from a pure student
+
+    for user in graph:
+        if len(to_infect) == number:
+            break
+        if len(user.students) == 0:
+            queue = [user]
+            while len(queue) > 0:
+                if len(to_infect) == number:
+                    break
+                node = queue.pop(0)
+                if node not in to_infect:
+                    to_infect.add(node)
+                    # prioritize students
+                    queue.extend(set(user.students) - to_infect)
+                    queue.extend(set(user.coaches) - to_infect)
+
+    # if there are no pure students
+    if len(to_infect) < number:
+        user = graph[0]
+        queue = [user]
+        while len(queue) > 0:
+            if len(to_infect) == number:
+                break
+            node = queue.pop(0)
+            if node not in to_infect:
+                to_infect.add(node)
+                # prioritize students
+                queue.extend(set(user.students) - to_infect)
+                queue.extend(set(user.coaches) - to_infect)
+    
+    return to_infect
+
+def get_components(users):
+    """Get all islands of users, sort them by ascending size, and return the list of them
+
+    :param users: a list of Users
+    """
+
+    components = []
     visited = set()
-    stack = [start]
-    while len(stack) > 0 and len(visited) < number:
-        node = stack.pop()
-        if node not in visited:
-            visited.add(node)
-            node.version = 1
-            stack.extend(set(node.students) - visited)
-            stack.extend(set(node.coaches) - visited)
 
-    #TODO definitely change this rather than doing brute force simple
-    # TODO have feature that displays desired number of infections, actual # of infections, and # of students/coaches w/ diff pairings
+    for user in users:
+        if user not in visited:
+            component = []
+            stack = [user]
+            while len(stack) > 0:
+                node = stack.pop()
+                if node not in visited:
+                    visited.add(node)
+                    component.append(node)
+                    
+                    # add neighbors that haven't been visited yet
+                    stack.extend(set(node.coaches) - visited)
+                    stack.extend(set(node.students) - visited)
+            components.append(component)
 
+    components.sort(key=len)
+
+    return components
 
 def setup_parser():
     """Set up an arg parser in order to capture a -visualize flag"""
     parser = argparse.ArgumentParser(description='Infections! Yay!')
     parser.add_argument('-v', '--visualize', action='store_true', help='on: use matplotlib to visualize infection', default=False)
+    parser.add_argument('-l', '--limited', action='store_true', help='on: do a limited infection instead of a total', default=False)
+    parser.add_argument('-r', '--randomgraph', action='store_true', help='on: create a random graph', default=False)
 
     return parser
 
@@ -162,33 +257,51 @@ if __name__ == "__main__":
     parser = setup_parser()
     args = parser.parse_args()
     visualize = args.visualize
+    limited = args.limited
+    random_graph = args.randomgraph
 
-    # ---- demo the total infection
-    print "Testing total infection"
-    users = create_simple_graph()
-    # print the original versions
-    for user in users:
-        print user.version, 
-    print ""
+    if not limited:
+        # ---- demo the total infection
+        print "Testing total infection"
+        if random_graph:
+            users = create_random_graph()
+        else:
+            users = create_simple_graph()
+        print "Graph has", len(users), "nodes"
+        # print the original versions
+        for user in users:
+            print user.version, 
+        print ""
 
-    user = random.choice(users) 
-    total_infection(user, users, visualize)
-    # print the new versions
-    for user in users:
-        print user.version, 
+        user = random.choice(users) 
+        then = time.time()
+        total_infection(user, users, visualize)
+        # print the new versions
+        for user in users:
+            print user.version, 
 
-    # ---- demo the limited infection
-    print "\n"
-    print "---------------------"
-    print "Testing limited infection"
-    users = create_simple_graph()
-    # print the original versions
-    for user in users:
-        print user.version, 
-    print ""
+        print "\n"
+        print "Total infection took", time.time() - then, "seconds"
 
-    user = random.choice(users) 
-    limited_infection(user, users, 5, visualize)
-    # print the new versions
-    for user in users:
-        print user.version,
+    else:
+        # ---- demo the limited infection
+        print "---------------------"
+        print "Testing limited infection"
+        if random_graph:
+            users = create_random_graph()
+        else:
+            users = create_simple_graph()
+        print "Graph has", len(users), "nodes"
+        # print the original versions
+        for user in users:
+            print user.version, 
+        print ""
+
+        user = random.choice(users) 
+        number = random.randint(1, len(users))
+        print "Infecting", number, "users"
+        limited_infection(users, number, visualize)
+        # print the new versions
+        for user in users:
+            print user.version,
+        print "\n"
