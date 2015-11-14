@@ -4,7 +4,11 @@ Nothing needs to be installed if this program runs without visualizations.
 Otherwise, this program requires Networkx and matplotlib to be installed.
 Their python bindings also need to be installed.
 
-To install Networkx, matplotlib, and pip on a mac, run the included installer:
+Matplotlib was giving me trouble in a virtual enviroment so I opted to install it
+globally instead. If you are comfortable installing networkx and matplotlib globally,
+run the following command. 
+
+To install Networkx and matplotlib on a mac, run the included installer:
 
     sudo ./install_dependencies
 
@@ -29,6 +33,7 @@ The visualization is somewhat random, so the graph will look different every tim
 Sometimes, this will result in jumbled-looking graphs. 
 If you do not want to install these packages, I have included a video of the visualization
 on a small graph.
+You may have to click the app icon after it loads in order for it to take focus.
 
 Tests
 -----
@@ -52,8 +57,9 @@ students, and pure coaches in that order until reaching the desired number of in
 
 To Do
 -------
+* I would have liked to get matplotlib to work in a virtual environment.
 * I would have liked to have the random graphs represent actual classroom structures instead of being purely random. 
 * I would have liked to create more simple graphs to test the accuracy of my algorithms. 
 * I wish I could guarantee that the visualization would work out of the box. 
-* I would have liked the visualization to been more robust and cleaner.
+* I would have liked the visualization to have been more robust and cleaner.
 * I wanted to spend more time on the limited infection algorithm. I chose what I believed to be a compromise between implementation difficulty and usefulness. I do believe that my method follows the spirit of the problem, but having a robust algorithm like Kernighan-Lin to partition the graph would have been really cool to at least see how effective it would have been.
