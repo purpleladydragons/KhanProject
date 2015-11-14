@@ -19,8 +19,11 @@ To run the program:
     python infection.py -v -l -r
 
 -v, -l, and -r are optional flags. 
+
 -v will turn on visualizations
+
 -l will perform a limited infection. Omitting the -l will run a total infection
+
 -r will create a random graph instead of using the simple 20-node graph I hard-coded
 
 The arrows in the graph represent the 'coaches' relationship. That is, an arrow from A to B means A coaches B. 
