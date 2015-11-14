@@ -1,7 +1,7 @@
 Installation
 -----------
 Nothing needs to be installed if this program runs without visualizations. 
-Otherwise, this program requires Networkx and matplotlib to be installed.
+**This program requires Networkx and matplotlib to be installed for visualization.**
 Their python bindings also need to be installed.
 
 Matplotlib was giving me trouble in a virtual enviroment so I opted to install it
@@ -36,7 +36,7 @@ The visualization is somewhat random, so the graph will look different every tim
 Sometimes, this will result in jumbled-looking graphs. 
 If you do not want to install these packages, I have included a video of the visualization
 on a small graph.
-You may have to click the app icon after it loads in order for it to take focus.
+You may have to click the app icon after it loads in order for the visualization to take focus.
 
 Tests
 -----
@@ -51,12 +51,12 @@ a large random graph (this is very, very slow).
 Infection Algos
 ---------
 Total infection is just a simple DFS from the given user.
+
 Limited infection breaks the graph up into its separate components first.
 It then totally infects the components in order of size until they get too
-large to fit under the desired number of infections. At that point, the remaining
-smallest component is split into subgroups in order to minimize the number of pure students
-with different versions than their teachers. Then a priorized BFS searches for pure students, 
-students, and pure coaches in that order until reaching the desired number of infected users. 
+large to fit under the desired number of infections. Then a priorized BFS searches on 
+the next smallest component for pure students, student-coaches, and pure coaches in 
+that order until reaching the desired number of infected users. 
 
 To Do
 -------
