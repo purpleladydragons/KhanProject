@@ -1,10 +1,9 @@
-# TODO overall
-# make sure their install goes smoothly
-# random graphs
-# handcrafted graphs that we know the answer to for testing
-
-import networkx as nx
-import matplotlib.pyplot as plt
+try:
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    print "Imported viz libs"
+except ImportError:
+    print "Couldn't import viz libs"
 import argparse
 import random
 import time
@@ -158,7 +157,7 @@ def limited_infection(users, number, visualize=False):
                     redraw_graph(G, graph_color_values, disp)
             infected += len(component)
 
-        # bring in the big guns 
+        # partially infect the component
         else:
             to_infect= bfs_infect(component, number-infected)
             for user in to_infect:
@@ -183,7 +182,6 @@ def bfs_infect(graph, number):
     to_infect = set()
 
     # do a sort of bfs starting from a pure student
-
     for user in graph:
         if len(to_infect) == number:
             break
@@ -224,6 +222,7 @@ def get_components(users):
     components = []
     visited = set()
 
+    # use DFS with a visited set to determine components
     for user in users:
         if user not in visited:
             component = []
