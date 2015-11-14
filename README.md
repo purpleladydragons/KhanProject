@@ -18,7 +18,7 @@ To run the program:
 
     python infection.py -v -l -r
 
--v, -l, and -r are optional flags. 
+-v, -l (lower case L), and -r are optional flags. 
 
 -v will turn on visualizations
 
