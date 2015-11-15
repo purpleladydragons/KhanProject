@@ -34,7 +34,10 @@ Visualization only works well on small graphs (< 30 nodes).
 The visualization is somewhat random, so the graph will look different every time the program is run.
 Sometimes, this will result in jumbled-looking graphs. 
 If you do not want to install these packages, I have included a video of the visualization
-on a small graph.
+on a small graph (visualization.mov). 
+
+Also, here is a slow gif of the visualization process:
+![gif of viz](https://raw.github.com/purpleladydragons/KhanProject/blob/master/visualization.gif)
 
 Tests
 -----
