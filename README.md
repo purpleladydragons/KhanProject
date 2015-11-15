@@ -36,7 +36,7 @@ Sometimes, this will result in jumbled-looking graphs.
 If you do not want to install these packages, I have included a video of the visualization
 on a small graph (visualization.mov). 
 
-Also, here is a slow gif of the visualization process:
+Also, here is a low quality gif of the visualization process:
 ![gif of viz](https://github.com/purpleladydragons/KhanProject/blob/master/visualization.gif)
 
 Tests
