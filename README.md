@@ -66,4 +66,4 @@ To Do
 * I would have liked to create more simple graphs to test the accuracy of my algorithms. 
 * I wish I could guarantee that the visualization would work out of the box. 
 * I would have liked the visualization to have been more robust and cleaner.
-* I wanted to spend more time on the limited infection algorithm. I chose what I believed to be a compromise between implementation difficulty and usefulness. I do believe that my method follows the spirit of the problem, but having a robust algorithm like Kernighan-Lin to partition the graph would have been really cool to at least see how effective it would have been.
+* I wanted to spend more time on the limited infection algorithm. I chose what I believed to be a compromise between implementation difficulty and usefulness. I do believe that my method follows the spirit of the problem, but having a robust algorithm like Kernighan-Lin to partition the last component would have been really cool to at least see how effective it would have been.
