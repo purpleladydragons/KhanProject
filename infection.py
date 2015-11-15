@@ -95,7 +95,6 @@ def redraw_graph(G, graph_color_values, disp):
     """
     nx.draw_networkx_nodes(G, disp, cmap=plt.get_cmap('jet'), node_color = graph_color_values)
     plt.draw()
-    plt.pause(.5)
 
 def total_infection(start, users, visualize=False):
     """Infect everyone related to the user via coach-student pairing
@@ -145,6 +144,7 @@ def limited_infection(users, number, visualize=False):
 
     if visualize:
         G, graph_color_values, disp = load_graph(users)
+        plt.pause(5)
 
     for component in components:
         if len(component) + infected < number:
